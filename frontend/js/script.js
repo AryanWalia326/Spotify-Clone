@@ -1,19 +1,5 @@
 console.log('🎵 Enhanced Spotify Clone with Stunning Visual Effects 🎵');
 
-// Immediately hide loading screen when script loads
-document.addEventListener('DOMContentLoaded', function() {
-    hideLoadingScreen();
-});
-
-// Also hide it immediately if DOM is already loaded
-if (document.readyState === 'loading') {
-    // Script loaded before DOM, wait for DOM
-    document.addEventListener('DOMContentLoaded', hideLoadingScreen);
-} else {
-    // DOM already loaded, hide immediately
-    hideLoadingScreen();
-}
-
 let currentSong = null;
 let songs = [];
 let currentSongIndex = 0;
@@ -36,17 +22,23 @@ function createVisualEffects() {
 
     // Add smooth scroll behavior
     document.documentElement.style.scrollBehavior = 'smooth';
+    
+    // Hide loading screen immediately when DOM is ready
+    hideLoadingScreen();
 }
 
 function hideLoadingScreen() {
     const loadingScreen = document.getElementById('loadingScreen');
     if (loadingScreen) {
-        // Hide loading screen immediately
-        loadingScreen.style.opacity = '0';
-        loadingScreen.style.display = 'none';
-        // Add loaded class to body for any additional animations
-        document.body.classList.add('loaded');
-        console.log('Loading screen hidden successfully! 🎉');
+        // Hide loading screen quickly
+        setTimeout(() => {
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                // Add loaded class to body for any additional animations
+                document.body.classList.add('loaded');
+            }, 300);
+        }, 100); // Very fast loading
     }
 }
 
