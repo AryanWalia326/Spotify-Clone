@@ -422,7 +422,7 @@ function loadAlbum(album) {
     songs = album.songs;
     displaySongs();
     if (songs.length > 0) {
-        loadSong(0);
+        loadSong(0, true); // Load first song but keep it paused
     }
 }
 
