@@ -10,9 +10,6 @@
 ### 1. Configure MongoDB Connection
 
 1. **Update your MongoDB connection string in `.env` file:**
-   ```
-   MONGODB_URI=mongodb+srv://your_username:your_password@musicplayerclone.xs1mbx5.mongodb.net/spotify-clone?retryWrites=true&w=majority
-   ```
    
    Replace `your_username` and `your_password` with your actual MongoDB credentials.
 

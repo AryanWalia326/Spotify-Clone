@@ -16,7 +16,6 @@ console.log('🔑 Your current connection string has placeholders:');
 console.log('mongodb+srv://<db_username>:<db_password>@musicplayerclone.xs1mbx5.mongodb.net/...\n');
 
 console.log('✅ It should look like this (with your actual credentials):');
-console.log('mongodb+srv://myusername:mypassword123@musicplayerclone.xs1mbx5.mongodb.net/...\n');
 
 console.log('📝 To fix this:');
 console.log('1. Open: backend\\.env');
