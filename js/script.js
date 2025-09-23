@@ -471,12 +471,93 @@ if (repeatBtn) {
 
 }
 
+// Authentication functionality
+class AuthManager {
+    constructor() {
+        this.users = JSON.parse(localStorage.getItem('spotifyCloneUsers')) || [];
+        this.currentUser = JSON.parse(localStorage.getItem('spotifyCloneCurrentUser')) || null;
+    }
+
+    getCurrentUser() {
+        return this.currentUser;
+    }
+
+    isLoggedIn() {
+        return this.currentUser !== null;
+    }
+
+    logout() {
+        localStorage.removeItem('spotifyCloneCurrentUser');
+        this.currentUser = null;
+        updateAuthUI();
+    }
+}
+
+const authManager = new AuthManager();
+
+function updateAuthUI() {
+    const signupBtn = document.getElementById('signupBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const userMenu = document.getElementById('userMenu');
+    const welcomeText = document.getElementById('welcomeText');
+
+    if (authManager.isLoggedIn()) {
+        // User is logged in
+        signupBtn.style.display = 'none';
+        loginBtn.style.display = 'none';
+        userMenu.style.display = 'flex';
+        userMenu.style.alignItems = 'center';
+        userMenu.style.gap = '15px';
+        welcomeText.textContent = `Welcome, ${authManager.getCurrentUser().username}!`;
+    } else {
+        // User is not logged in
+        signupBtn.style.display = 'block';
+        loginBtn.style.display = 'block';
+        userMenu.style.display = 'none';
+    }
+}
+
+function setupAuthEventListeners() {
+    const signupBtn = document.getElementById('signupBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const profileBtn = document.getElementById('profileBtn');
+
+    if (signupBtn) {
+        signupBtn.addEventListener('click', () => {
+            window.location.href = 'signup.html';
+        });
+    }
+
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
+    }
+
+    if (profileBtn) {
+        profileBtn.addEventListener('click', () => {
+            window.location.href = 'profile.html';
+        });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to log out?')) {
+                authManager.logout();
+            }
+        });
+    }
+}
+
 function main() {
     displayAlbums();
     if (sampleAlbums.length > 0) {
         loadAlbum(sampleAlbums[0]);
     }
     setupEventListeners();
+    setupAuthEventListeners();
+    updateAuthUI();
 }
 
 main();

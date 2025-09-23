@@ -228,6 +228,56 @@ body {
     transform: scale(1.05);
 }
 
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: white;
+    font-size: 14px;
+}
+
+.user-menu #welcomeText {
+    color: rgb(156, 148, 148);
+    font-weight: 500;
+}
+
+.logoutbtn {
+    background-color: transparent;
+    color: rgb(156, 148, 148);
+    font-weight: bold;
+    border: 1px solid rgb(156, 148, 148);
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.logoutbtn:hover {
+    color: white;
+    border-color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-btn {
+    background-color: #1db954;
+    color: white;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+.profile-btn:hover {
+    background-color: #1ed760;
+    transform: scale(1.05);
+}
+
 .playbar {
     display: flex;
     justify-content: center;
