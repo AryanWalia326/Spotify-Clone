@@ -1,0 +1,17 @@
+{
+  "name": "spotify-clone-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Spotify Clone - HTML, CSS, JavaScript client",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "serve": "python -m http.server 3000",
+    "dev": "python -m http.server 3000",
+    "preview": "start index.html"
+  },
+  "keywords": ["spotify", "clone", "music", "frontend", "html", "css", "javascript"],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {}
+}

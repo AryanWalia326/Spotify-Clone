@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up - Spotify Clone</title>
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-form-container">
+            <div class="logo">
+                <img src="img/logo.svg" alt="Spotify Logo" width="120">
+            </div>
+            
+            <form id="signupForm" class="auth-form">
+                <h1>Sign up for free to start listening</h1>
+                
+                <div class="input-group">
+                    <label for="username">What should we call you?</label>
+                    <input type="text" id="username" name="username" required placeholder="Enter a profile name" minlength="3">
+                    <div class="error-message" id="username-error"></div>
+                    <small>This appears on your profile.</small>
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">What's your email?</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                    <div class="error-message" id="email-error"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Create a password</label>
+                    <input type="password" id="password" name="password" required placeholder="Create a password" minlength="8">
+                    <div class="error-message" id="password-error"></div>
+                    <small>Use 8 or more characters with a mix of letters, numbers & symbols.</small>
+                </div>
+                
+                <div class="input-group">
+                    <label for="confirmPassword">Confirm your password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Enter your password again">
+                    <div class="error-message" id="confirmPassword-error"></div>
+                </div>
+                
+                <div class="terms">
+                    <label>
+                        <input type="checkbox" id="terms" required>
+                        <span class="checkmark"></span>
+                        I agree to the <a href="#" target="_blank">Spotify Terms and Conditions of Use</a>.
+                    </label>
+                </div>
+                
+                <div class="privacy">
+                    <label>
+                        <input type="checkbox" id="privacy" required>
+                        <span class="checkmark"></span>
+                        I agree to the <a href="#" target="_blank">Spotify Privacy Policy</a>.
+                    </label>
+                </div>
+                
+                <div class="marketing">
+                    <label>
+                        <input type="checkbox" id="marketing">
+                        <span class="checkmark"></span>
+                        I would prefer not to receive marketing messages from Spotify.
+                    </label>
+                </div>
+                
+                <button type="submit" class="submit-btn">Sign Up</button>
+                
+                <hr class="divider">
+                
+                <div class="login-link">
+                    <span>Have an account?</span>
+                    <a href="login.html">Log in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="js/auth.js"></script>
+</body>
+</html>
