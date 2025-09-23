@@ -85,13 +85,6 @@ npm install
 ```
 
 Create `.env` file with your MongoDB credentials:
-```env
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/spotify-clone
-JWT_SECRET=your-super-secret-key
-PORT=5000
-NODE_ENV=development
-```
-
 Test MongoDB connection:
 ```bash
 node test-connection.js
