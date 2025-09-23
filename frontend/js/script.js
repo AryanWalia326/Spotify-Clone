@@ -1,4 +1,18 @@
-console.log('Enhanced Spotify Clone JavaScript');
+console.log('🎵 Enhanced Spotify Clone with Stunning Visual Effects 🎵');
+
+// Immediately hide loading screen when script loads
+document.addEventListener('DOMContentLoaded', function() {
+    hideLoadingScreen();
+});
+
+// Also hide it immediately if DOM is already loaded
+if (document.readyState === 'loading') {
+    // Script loaded before DOM, wait for DOM
+    document.addEventListener('DOMContentLoaded', hideLoadingScreen);
+} else {
+    // DOM already loaded, hide immediately
+    hideLoadingScreen();
+}
 
 let currentSong = null;
 let songs = [];
@@ -10,6 +24,84 @@ let duration = 0;
 let currFolder = '';
 let isShuffle = false;
 let isRepeat = false;
+
+// Enhanced Visual Effects
+function createVisualEffects() {
+    // Add ripple effect on card clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.card')) {
+            createRippleEffect(e);
+        }
+    });
+
+    // Add smooth scroll behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+}
+
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) {
+        // Hide loading screen immediately
+        loadingScreen.style.opacity = '0';
+        loadingScreen.style.display = 'none';
+        // Add loaded class to body for any additional animations
+        document.body.classList.add('loaded');
+        console.log('Loading screen hidden successfully! 🎉');
+    }
+}
+
+function createRippleEffect(e) {
+    const card = e.target.closest('.card');
+    const ripple = document.createElement('div');
+    const rect = card.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    
+    ripple.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        left: ${x}px;
+        top: ${y}px;
+        background: radial-gradient(circle, rgba(29, 185, 84, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple 0.6s ease-out;
+        pointer-events: none;
+        z-index: 10;
+    `;
+    
+    card.style.position = 'relative';
+    card.appendChild(ripple);
+    
+    setTimeout(() => ripple.remove(), 600);
+}
+
+// Add ripple animation to CSS dynamically
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes ripple {
+        to {
+            transform: scale(2);
+            opacity: 0;
+        }
+    }
+    
+    body {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+    
+    body.loaded {
+        opacity: 1;
+    }
+    
+    .card {
+        overflow: hidden;
+    }
+`;
+document.head.appendChild(style);
 
 const sampleAlbums = [
   {
@@ -230,14 +322,66 @@ function playMusic() {
     if (currentSong.paused) {
         currentSong.play();
         playBtn.src = "img/pause.svg";
+        playBtn.classList.add("playing");
         isPlaying = true;
+        
+        // Add beautiful visual effects when playing
+        addPlayingEffects();
+        
+        // Update currently playing song in list
+        updatePlayingSongInList();
     } else {
         currentSong.pause();
         playBtn.src = "img/play.svg";
+        playBtn.classList.remove("playing");
         isPlaying = false;
+        
+        // Remove playing effects
+        removePlayingEffects();
     }
 
     updatePlaybackTime();
+}
+
+function addPlayingEffects() {
+    const playBtn = document.getElementById("play");
+    const playbar = document.querySelector(".playbar");
+    
+    // Add glow effect to play button
+    if (playBtn) {
+        playBtn.style.boxShadow = "0 0 30px rgba(29, 185, 84, 0.8)";
+    }
+    
+    // Add subtle animation to playbar
+    if (playbar) {
+        playbar.style.background = "linear-gradient(135deg, rgba(29, 185, 84, 0.1), rgba(10, 10, 10, 0.95), rgba(139, 92, 246, 0.1))";
+    }
+}
+
+function removePlayingEffects() {
+    const playBtn = document.getElementById("play");
+    const playbar = document.querySelector(".playbar");
+    
+    if (playBtn) {
+        playBtn.style.boxShadow = "";
+    }
+    
+    if (playbar) {
+        playbar.style.background = "";
+    }
+}
+
+function updatePlayingSongInList() {
+    // Remove previous playing indicators
+    document.querySelectorAll('.songList ul li').forEach(li => {
+        li.classList.remove('playing');
+    });
+    
+    // Add playing indicator to current song
+    const songItems = document.querySelectorAll('.songList ul li');
+    if (songItems[currentSongIndex]) {
+        songItems[currentSongIndex].classList.add('playing');
+    }
 }
 
 function updatePlaybackTime() {
@@ -579,6 +723,9 @@ function setupAuthEventListeners() {
 }
 
 function main() {
+    // Hide loading screen immediately
+    createVisualEffects();
+    
     displayAlbums();
     if (sampleAlbums.length > 0) {
         loadAlbum(sampleAlbums[0]);
@@ -591,8 +738,58 @@ function main() {
     const volumeSlider = document.getElementById("volumeSlider");
     if (volumeSlider) {
         volumeSlider.value = currentVolume * 100;
-        console.log("Initialized volume slider to:", currentVolume * 100);
+        console.log("🎵 Initialized volume slider to:", currentVolume * 100);
     }
+    
+    // Add welcome animation
+    setTimeout(() => {
+        console.log("🌟 Welcome to the most beautiful Spotify clone! 🌟");
+        showWelcomeAnimation();
+    }, 500);
 }
 
-main();
+function showWelcomeAnimation() {
+    // Hide loading screen with beautiful animation
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) {
+        setTimeout(() => {
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }, 1000);
+    }
+    
+    const title = document.querySelector('.spotifyPlaylists h1');
+    if (title) {
+        title.style.transform = 'translateY(-20px)';
+        title.style.opacity = '0';
+        setTimeout(() => {
+            title.style.transform = 'translateY(0)';
+            title.style.opacity = '1';
+            title.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+        }, 1200);
+    }
+    
+    // Animate cards with stagger effect (faster loading)
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.style.transform = 'translateY(30px)';
+            card.style.opacity = '0';
+            setTimeout(() => {
+                card.style.transform = 'translateY(0)';
+                card.style.opacity = '1';
+                card.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            }, index * 50); // Much faster staggered animation
+        });
+    }, 200); // Start animation much sooner
+}
+
+// Start the app as soon as DOM is ready (not waiting for images/resources)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    // DOM is already ready
+    main();
+}

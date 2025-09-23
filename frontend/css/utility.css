@@ -1,52 +1,104 @@
-.border{
-    border: 2px solid red;
+/* Enhanced Utility Classes for Beautiful Spotify Clone */
+
+.border {
+    border: 2px solid rgba(29, 185, 84, 0.5);
     margin: 3px;
+    border-radius: 8px;
 }
 
-.flex{
+.flex {
     display: flex;
 }
 
-.justify-center{
+.justify-center {
     justify-content: center;
 }
 
-.items-center{
+.items-center {
     align-items: center;
 }
 
-.bg-black{
-    background-color: black;
+.bg-black {
+    background: transparent;
     color: white;
 }
 
-.invert{
+.invert {
     filter: invert(1);
 }
 
-.bg-grey{
-    background-color: #121212;
+.bg-grey {
+    background: rgba(30, 30, 30, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.rounded{
-    border-radius: 7px;
+.rounded {
+    border-radius: 16px;
 }
 
-.m-1{
-    margin: 5px;
+.m-1 {
+    margin: 8px;
 }
 
-.p-1{
-    padding: 10px;
+.p-1 {
+    padding: 15px;
 }
 
+/* Enhanced Scrollbar Styling */
 ::-webkit-scrollbar {
-    width: 12px;
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #333; 
-    border-radius: 6px;
+    background: linear-gradient(135deg, #1DB954, #8b5cf6);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #1ed760, #ec4899);
+    box-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
+}
+
+/* Additional Utility Classes */
+.glow {
+    box-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
+}
+
+.hover-lift {
+    transition: transform 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #1DB954, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.glass-effect {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pulse-animation {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
 }
 
 ::-webkit-scrollbar-track {
