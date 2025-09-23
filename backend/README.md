@@ -54,11 +54,6 @@ backend/
    ```
    
    Update `.env` with your MongoDB credentials:
-   ```env
-   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/spotify-clone?retryWrites=true&w=majority
-   JWT_SECRET=your-super-secret-jwt-key
-   PORT=5000
-   ```
 
 3. **Test MongoDB Connection**
    ```bash
