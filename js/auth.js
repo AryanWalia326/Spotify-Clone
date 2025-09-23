@@ -1,8 +1,9 @@
-// Authentication Manager for Spotify Clone
+// Authentication Manager for Spotify Clone with MongoDB Backend
 class AuthManager {
     constructor() {
-        this.users = JSON.parse(localStorage.getItem('spotifyCloneUsers')) || [];
+        this.apiUrl = 'http://localhost:5000/api';
         this.currentUser = JSON.parse(localStorage.getItem('spotifyCloneCurrentUser')) || null;
+        this.token = localStorage.getItem('spotifyCloneToken') || null;
         this.init();
     }
 
@@ -11,10 +12,35 @@ class AuthManager {
         if (this.currentUser && (window.location.pathname.includes('login.html') || window.location.pathname.includes('signup.html'))) {
             window.location.href = 'index.html';
         }
+        
+        // Verify token if exists
+        if (this.token) {
+            this.verifyToken();
+        }
     }
 
-    saveUsers() {
-        localStorage.setItem('spotifyCloneUsers', JSON.stringify(this.users));
+    async verifyToken() {
+        try {
+            const response = await fetch(`${this.apiUrl}/auth/verify-token`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.currentUser = data.user;
+                this.saveCurrentUser(data.user);
+            } else {
+                this.clearCurrentUser();
+            }
+        } catch (error) {
+            console.error('Token verification failed:', error);
+            this.clearCurrentUser();
+        }
     }
 
     saveCurrentUser(user) {
@@ -22,47 +48,91 @@ class AuthManager {
         localStorage.setItem('spotifyCloneCurrentUser', JSON.stringify(user));
     }
 
+    saveToken(token) {
+        this.token = token;
+        localStorage.setItem('spotifyCloneToken', token);
+    }
+
     clearCurrentUser() {
         this.currentUser = null;
+        this.token = null;
         localStorage.removeItem('spotifyCloneCurrentUser');
+        localStorage.removeItem('spotifyCloneToken');
     }
 
-    userExists(email) {
-        return this.users.some(user => user.email.toLowerCase() === email.toLowerCase());
+    async createUser(userData) {
+        try {
+            const response = await fetch(`${this.apiUrl}/auth/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.saveToken(data.token);
+                this.saveCurrentUser(data.user);
+                return { success: true, user: data.user };
+            } else {
+                return { success: false, message: data.message, errors: data.errors };
+            }
+        } catch (error) {
+            console.error('Signup error:', error);
+            return { success: false, message: 'Network error. Please try again.' };
+        }
     }
 
-    usernameExists(username) {
-        return this.users.some(user => user.username.toLowerCase() === username.toLowerCase());
+    async validateUser(emailOrUsername, password) {
+        try {
+            const response = await fetch(`${this.apiUrl}/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    emailOrUsername,
+                    password
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.saveToken(data.token);
+                this.saveCurrentUser(data.user);
+                return { success: true, user: data.user };
+            } else {
+                return { success: false, message: data.message };
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            return { success: false, message: 'Network error. Please try again.' };
+        }
     }
 
-    validateUser(emailOrUsername, password) {
-        return this.users.find(user => 
-            (user.email.toLowerCase() === emailOrUsername.toLowerCase() || 
-             user.username.toLowerCase() === emailOrUsername.toLowerCase()) && 
-            user.password === password
-        );
-    }
+    async updateUserStats(stats) {
+        if (!this.token) return;
 
-    createUser(userData) {
-        const newUser = {
-            id: Date.now(),
-            username: userData.username,
-            email: userData.email.toLowerCase(),
-            password: userData.password,
-            createdAt: new Date().toISOString(),
-            lastLogin: new Date().toISOString()
-        };
-        
-        this.users.push(newUser);
-        this.saveUsers();
-        return newUser;
-    }
+        try {
+            const response = await fetch(`${this.apiUrl}/user/stats`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(stats)
+            });
 
-    updateLastLogin(user) {
-        const userIndex = this.users.findIndex(u => u.id === user.id);
-        if (userIndex !== -1) {
-            this.users[userIndex].lastLogin = new Date().toISOString();
-            this.saveUsers();
+            const data = await response.json();
+            if (data.success && this.currentUser) {
+                this.currentUser.stats = data.stats;
+                this.saveCurrentUser(this.currentUser);
+            }
+        } catch (error) {
+            console.error('Update stats error:', error);
         }
     }
 
@@ -71,12 +141,24 @@ class AuthManager {
     }
 
     isLoggedIn() {
-        return this.currentUser !== null;
+        return this.currentUser !== null && this.token !== null;
     }
 
-    logout() {
-        this.clearCurrentUser();
-        window.location.href = 'login.html';
+    async logout() {
+        try {
+            await fetch(`${this.apiUrl}/auth/logout`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+        } catch (error) {
+            console.error('Logout error:', error);
+        } finally {
+            this.clearCurrentUser();
+            window.location.href = 'login.html';
+        }
     }
 }
 
@@ -255,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Login Handler
-function handleLogin() {
+async function handleLogin() {
     clearAllErrors();
     setLoading(true);
 
@@ -281,28 +363,28 @@ function handleLogin() {
         return;
     }
 
-    // Simulate API call delay
-    setTimeout(() => {
-        const user = authManager.validateUser(email, password);
+    try {
+        const result = await authManager.validateUser(email, password);
         
-        if (user) {
-            authManager.updateLastLogin(user);
-            authManager.saveCurrentUser(user);
-            
+        if (result.success) {
             showSuccess('Login successful! Redirecting...');
             
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1500);
         } else {
-            showError('password', 'Incorrect email/username or password');
+            showError('password', result.message || 'Login failed');
             setLoading(false);
         }
-    }, 1000);
+    } catch (error) {
+        console.error('Login error:', error);
+        showError('password', 'Network error. Please try again.');
+        setLoading(false);
+    }
 }
 
 // Signup Handler
-function handleSignup() {
+async function handleSignup() {
     clearAllErrors();
     setLoading(true);
 
@@ -322,8 +404,8 @@ function handleSignup() {
     } else if (username.length < 3) {
         showError('username', 'Username must be at least 3 characters');
         hasErrors = true;
-    } else if (authManager.usernameExists(username)) {
-        showError('username', 'Username already exists');
+    } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        showError('username', 'Username can only contain letters, numbers, and underscores');
         hasErrors = true;
     }
 
@@ -332,9 +414,6 @@ function handleSignup() {
         hasErrors = true;
     } else if (!isValidEmail(email)) {
         showError('email', 'Please enter a valid email address');
-        hasErrors = true;
-    } else if (authManager.userExists(email)) {
-        showError('email', 'An account with this email already exists');
         hasErrors = true;
     }
 
@@ -372,21 +451,40 @@ function handleSignup() {
         return;
     }
 
-    // Simulate API call delay
-    setTimeout(() => {
-        const newUser = authManager.createUser({
+    try {
+        const result = await authManager.createUser({
             username,
             email,
             password
         });
 
-        authManager.saveCurrentUser(newUser);
-        showSuccess('Account created successfully! Redirecting...');
-        
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1500);
-    }, 1000);
+        if (result.success) {
+            showSuccess('Account created successfully! Redirecting...');
+            
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        } else {
+            if (result.errors && result.errors.length > 0) {
+                result.errors.forEach(error => {
+                    if (error.param === 'username') {
+                        showError('username', error.msg);
+                    } else if (error.param === 'email') {
+                        showError('email', error.msg);
+                    } else if (error.param === 'password') {
+                        showError('password', error.msg);
+                    }
+                });
+            } else {
+                showError('email', result.message || 'Signup failed');
+            }
+            setLoading(false);
+        }
+    } catch (error) {
+        console.error('Signup error:', error);
+        showError('email', 'Network error. Please try again.');
+        setLoading(false);
+    }
 }
 
 // Export for use in other files
