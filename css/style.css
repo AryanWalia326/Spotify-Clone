@@ -898,7 +898,7 @@ body::before {
 .songList .info {
     font-size: 13px;
     flex: 1;
-    min-width: 0;
+    min-width: 200px;
 }
 
 .info div:first-child {
