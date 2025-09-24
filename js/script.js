@@ -582,12 +582,46 @@ function setupEventListeners() {
     }
     
 
-    // Mobile menu
+    // Mobile menu with responsive handling
     document.querySelector(".hamburger").addEventListener("click", () => {
-        document.querySelector(".left").style.left = "0";
+        const leftPanel = document.querySelector(".left");
+        leftPanel.style.left = "0";
+        leftPanel.classList.add("active");
+        // Prevent body scroll when menu is open
+        document.body.style.overflow = "hidden";
     });
+    
     document.querySelector(".close").addEventListener("click", () => {
-        document.querySelector(".left").style.left = "-120%";
+        const leftPanel = document.querySelector(".left");
+        leftPanel.style.left = "-120%";
+        leftPanel.classList.remove("active");
+        // Restore body scroll
+        document.body.style.overflow = "";
+    });
+
+    // Close menu when clicking outside on mobile
+    document.addEventListener("click", (e) => {
+        const leftPanel = document.querySelector(".left");
+        const hamburger = document.querySelector(".hamburger");
+        
+        if (window.innerWidth <= 1023 && 
+            !leftPanel.contains(e.target) && 
+            !hamburger.contains(e.target) &&
+            leftPanel.classList.contains("active")) {
+            leftPanel.style.left = "-120%";
+            leftPanel.classList.remove("active");
+            document.body.style.overflow = "";
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener("resize", () => {
+        const leftPanel = document.querySelector(".left");
+        if (window.innerWidth > 1023) {
+            leftPanel.style.left = "";
+            leftPanel.classList.remove("active");
+            document.body.style.overflow = "";
+        }
     });
 
     // Play/pause with spacebar
