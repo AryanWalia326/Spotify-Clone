@@ -935,6 +935,7 @@ body::before {
     left: 0;
     cursor: pointer;
     overflow: hidden;
+    --progress: 0%;
 }
 
 .seekbar::before {
@@ -943,7 +944,7 @@ body::before {
     top: 0;
     left: 0;
     height: 100%;
-    width: 0%;
+    width: var(--progress);
     background: linear-gradient(90deg, var(--spotify-green), var(--accent-purple));
     border-radius: 10px;
     transition: width 0.1s linear;

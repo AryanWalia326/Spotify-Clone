@@ -413,7 +413,15 @@ function previousSong() {
 function updateProgressBar() {
     if (!duration) return;
     const progress = (currentTime / duration) * 100;
-    document.querySelector(".circle").style.left = progress + "%";
+    const seekbar = document.querySelector(".seekbar");
+    const circle = document.querySelector(".circle");
+    
+    // Update progress bar fill
+    seekbar.style.setProperty('--progress', progress + '%');
+    
+    // Update circle position
+    circle.style.left = progress + "%";
+    
     document.getElementById('currentTime').textContent = secondsToMinutesSeconds(currentTime);
 }
 
